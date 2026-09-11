@@ -8,15 +8,52 @@ sync. Every page load reads live from the GitHub API, and filters live in the UR
 ## Setup
 
 ```bash
+npm install
 echo "GITHUB_TOKEN=$(gh auth token)" > .env.local
-npm run dev
+npm run dev:install
 ```
 
-Serves at http://localhost:3100 (pinned — 3000 is commonly taken).
+Serves at http://localhost:3100 (pinned — 3000 is commonly taken), from a
+launchd agent that starts at login; see
+[Running the dev server in the background](#running-the-dev-server-in-the-background).
+`npm run dev` runs the same server in a terminal instead — stop the agent first
+with `npm run dev:stop`, or the two collide on the port.
 
 Any token with the `repo` scope works — that scope covers reading *and* writing
 notification threads. The token is read server-side only; it never reaches the
 browser.
+
+### Running the dev server in the background
+
+The dev server runs as a [launchd](https://www.launchd.info) user agent rather
+than in a terminal, so it is up whenever you are logged in and survives the
+terminal or session that started it.
+
+| Script                  | What it does                                                                     |
+| ----------------------- | -------------------------------------------------------------------------------- |
+| `npm run dev:install`   | Install the agent, start it, and have it start at every login.                   |
+| `npm run dev:uninstall` | Stop the agent and remove it, so it no longer starts at login.                   |
+| `npm run dev:start`     | Start the agent.                                                                 |
+| `npm run dev:stop`      | Stop the agent until you start it again or log in again.                         |
+| `npm run dev:restart`   | Restart the agent, such as after editing `next.config.ts` or `.env.local`.       |
+| `npm run dev:status`    | Report whether it is running, which checkout it serves, and whether it is bound. |
+| `npm run dev:logs`      | Follow the server log; `npm run dev:logs -- -n 100` prints the tail and exits.   |
+
+Notes:
+
+- launchd agents run at login rather than at boot, so the server comes up once
+  you are signed in.
+- Output goes to `~/Library/Logs/github-triage-dev.log`.
+- The agent serves the primary checkout, even when installed from a git
+  worktree. While a branch is under test, `scripts/triage-test-lock.sh` points it
+  at that worktree and points it back on release; `npm run dev:status` says
+  which checkout it is serving.
+- It runs the same node your shell does, resolved to a path that survives a
+  reboot, since launchd does not read your shell config. Override it with
+  `TRIAGE_NODE_BIN=/path/to/node/bin npm run dev:install`.
+- launchd restarts the server if it exits unexpectedly.
+- Install and start refuse while something else holds port 3100, since `next dev`
+  exits rather than falling back to another port.
 
 ## How data is fetched
 
@@ -60,6 +97,9 @@ src/
     StateIcon.tsx         octicon + colour per issue/PR state
   app/
     page.tsx      fetches and filters, server-rendered
+scripts/
+  dev-service.sh        the launchd agent that serves localhost:3100
+  triage-test-lock.sh   the mutex for serving a worktree there under test
 ```
 
 `markThreadRead`, `markThreadDone` and `unsubscribeThread` are implemented in

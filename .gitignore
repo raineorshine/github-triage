@@ -40,3 +40,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude Code: machine-local state. Worktrees, and the test lock and its queue
+# (scripts/triage-test-lock.sh), which live in the main checkout's .claude/.
+/.claude/worktrees/
+/.claude/*.lock/
+/.claude/*.queue/

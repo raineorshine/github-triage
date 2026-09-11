@@ -2,14 +2,18 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "github-triage",
-      "runtimeExecutable": "npm",
+      "name": "github-triage (worktree)",
+      "runtimeExecutable": "npx",
       "runtimeArgs": [
-        "run",
+        "next",
         "dev"
       ],
-      "port": 3100,
-      "autoPort": false
+      "port": 3101,
+      "autoPort": true
+    },
+    {
+      "name": "github-triage (live)",
+      "url": "http://localhost:3100"
     }
   ]
 }

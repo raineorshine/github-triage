@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Worktrees live in .claude/worktrees/, inside this checkout.
+    ".claude/**",
   ]),
 ]);
 

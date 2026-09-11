@@ -39,9 +39,14 @@
 #
 # TRIAGE_ROOT and TRIAGE_SERVICE point the lock and the service it drives
 # elsewhere, so all of it can be exercised from a scratch git repo against a
-# stub that keeps the served checkout in a file. A harness that sets a variable
-# in front of a shell function call keeps it set afterwards under sh, so give
-# each call's overrides a subshell of their own.
+# stub that keeps the served checkout in a file. TRIAGE_DEV_PORT goes with them:
+# `install` confirms the slot by fetching the page itself rather than through
+# the service, and on 3100 that loads the user's real inbox. A second sandboxed
+# session needs a worktree or a session id of its own: every process one chat
+# starts inherits its id, so a second run from the same checkout is the holder,
+# and its `wait` returns at once. A harness that sets a variable in front of a
+# shell function call keeps it set afterwards under sh, so give each call's
+# overrides a subshell of their own.
 #
 # The handoff is only as good as the holder's copy of this script: a worktree on
 # a branch from before a change to the queue releases the way its own copy

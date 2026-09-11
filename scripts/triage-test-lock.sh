@@ -63,7 +63,6 @@ LIVE_PORT=${TRIAGE_DEV_PORT:-3100}
 SERVICE=${TRIAGE_SERVICE:-$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)/dev-service.sh}
 
 SELF=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
-NOW=$(date +%s)
 # The worktree identifies the owner, but the user's question when a request is
 # denied is "which of my chats is that?" -- so record the session too. The id is
 # in the environment -- the desktop app's host id, or the CLI's own where there
@@ -73,10 +72,12 @@ SESSION_ID=${CLAUDE_CODE_HOST_SESSION_ID:-${CLAUDE_CODE_SESSION_ID:-}}
 die() { printf '%s\n' "$*" >&2; exit 1; }
 field() { cat "$LOCK/$1" 2>/dev/null || printf '(unknown)'; }
 age() {
-  held=$(cat "$LOCK/acquired" 2>/dev/null || printf '%s' "$NOW")
-  # Fresh, not $NOW: a waiting session asks this from a loop it entered long
-  # ago, and a lock that never appears to age is a lock `break` never reaches.
-  printf '%s' $(( $(date +%s) - held ))
+  # Read fresh, never once at startup: a waiting session asks this from a loop
+  # it entered long ago, and a lock that never appears to age is a lock `break`
+  # never reaches. A lock not yet stamped is being taken right now, so age 0.
+  now=$(date +%s)
+  held=$(cat "$LOCK/acquired" 2>/dev/null || printf '%s' "$now")
+  printf '%s' $(( now - held ))
 }
 holder_report() {
   printf 'held by   %s\n' "$(field label)"
@@ -247,7 +248,7 @@ take_lock() {
   mkdir "$LOCK" 2>/dev/null || return 1
   # Who owns it and when go in first, so a lock interrupted here is still one
   # its owner can release and one that ages into `break`'s reach. The time is
-  # read now rather than taken from $NOW: a `wait` reaches this long after it
+  # read here rather than once at startup: a `wait` reaches this long after it
   # started, and a lock stamped with the start would be born half-stale.
   printf '%s\n' "$SELF" > "$LOCK/worktree"
   printf '%s\n' "$(date +%s)" > "$LOCK/acquired"

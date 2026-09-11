@@ -60,7 +60,9 @@ hot-reloads it.
 **Editing is parallel, the live slot is serial.** A worktree runs its own
 `next dev` on a private port for anything the Browser pane can check —
 `preview_start` with the `github-triage (worktree)` configuration — and needs no
-lock for it. After a visible change, show a screenshot of what it renders. Stop
+lock for it. That configuration leaves the port to the Browser pane, which
+hands it over as `PORT`; pinning one there would collide between worktrees.
+After a visible change, show a screenshot of what it renders. Stop
 that preview as soon as the check is done: the Browser pane polls it, and every
 poll reads the inbox. One `next dev` runs per checkout (Next locks
 `.next/dev/lock`), so it must also be stopped before the branch goes in the slot.

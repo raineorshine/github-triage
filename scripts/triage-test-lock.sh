@@ -37,6 +37,12 @@
 #   dequeue           clear the queue; the recovery for a ticket that cannot be
 #                     pruned, which `break` does not touch
 #
+# TRIAGE_ROOT and TRIAGE_SERVICE point the lock and the service it drives
+# elsewhere, so all of it can be exercised from a scratch git repo against a
+# stub that keeps the served checkout in a file. A harness that sets a variable
+# in front of a shell function call keeps it set afterwards under sh, so give
+# each call's overrides a subshell of their own.
+#
 # The handoff is only as good as the holder's copy of this script: a worktree on
 # a branch from before a change to the queue releases the way its own copy
 # says, and a waiter that expects otherwise sleeps until some other session

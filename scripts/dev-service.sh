@@ -10,7 +10,10 @@
 # on release. Nothing else should call `serve`: it bypasses the lock.
 #
 # TRIAGE_DEV_LABEL, TRIAGE_DEV_PLIST, TRIAGE_DEV_LOG and TRIAGE_DEV_PORT exist
-# to exercise this script without touching the real agent.
+# to exercise this script without touching the real agent. Give such a run a
+# port of its own, never 3100: a refusal test there refuses only while
+# something else holds the port, and when nothing does, the test job binds it
+# and serves the live slot.
 
 set -eu
 

@@ -1,0 +1,400 @@
+/* Primer light/dark tokens, hand-copied so the app owns its own palette. */
+:root {
+  --bg-default: #ffffff;
+  --bg-muted: #f6f8fa;
+  --bg-hover: #eff2f5;
+  --bg-selected: #ddf4ff;
+  --border-default: #d1d9e0;
+  --border-muted: #d1d9e080;
+  --fg-default: #1f2328;
+  --fg-muted: #59636e;
+  --fg-accent: #0969da;
+  --fg-open: #1a7f37;
+  --fg-done: #8250df;
+  --fg-closed: #d1242f;
+  --fg-attention: #9a6700;
+  --shadow-row: inset 0 1px 0 var(--border-muted);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-default: #0d1117;
+    --bg-muted: #151b23;
+    --bg-hover: #21262d;
+    --bg-selected: #121d2f;
+    --border-default: #3d444d;
+    --border-muted: #3d444d80;
+    --fg-default: #f0f6fc;
+    --fg-muted: #9198a1;
+    --fg-accent: #4493f8;
+    --fg-open: #3fb950;
+    --fg-done: #ab7df8;
+    --fg-closed: #f85149;
+    --fg-attention: #d29922;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-muted);
+  color: var(--fg-default);
+  font: 14px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ── top bar ─────────────────────────────────────────────────────────── */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  background: var(--bg-default);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.topbarBrand {
+  display: flex;
+  color: var(--fg-default);
+}
+
+.topbarTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* ── layout ──────────────────────────────────────────────────────────── */
+
+.layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sidebar {
+    display: none;
+  }
+}
+
+/* ── sidebar ─────────────────────────────────────────────────────────── */
+
+.sidebar {
+  position: sticky;
+  top: 24px;
+}
+
+.navHeading {
+  margin: 20px 0 6px;
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.navGroup {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--fg-default);
+  line-height: 20px;
+}
+
+.navItem svg {
+  flex: none;
+  color: var(--fg-muted);
+}
+
+.navItem:hover {
+  background: var(--bg-hover);
+}
+
+.navItem[data-active='true'] {
+  background: var(--bg-hover);
+  font-weight: 600;
+}
+
+.navItem[data-disabled] {
+  color: var(--fg-muted);
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.navItem[data-disabled]:hover {
+  background: none;
+}
+
+.navItemLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.navCount {
+  flex: none;
+  padding: 0 6px;
+  border-radius: 20px;
+  background: var(--bg-hover);
+  color: var(--fg-muted);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.unreadDot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin: 0 4px;
+  border-radius: 50%;
+  background: var(--fg-accent);
+}
+
+/* ── list ────────────────────────────────────────────────────────────── */
+
+.list {
+  background: var(--bg-default);
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.listHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--bg-muted);
+  border-bottom: 1px solid var(--border-default);
+  font-size: 14px;
+}
+
+.listHeaderLabel {
+  font-weight: 400;
+}
+
+.listHeaderSep {
+  color: var(--fg-muted);
+}
+
+.listHeaderRight {
+  margin-left: auto;
+  color: var(--fg-muted);
+  font-size: 12px;
+}
+
+.linkButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.linkButton:disabled {
+  color: var(--fg-muted);
+  cursor: default;
+}
+
+.caret {
+  border: 4px solid transparent;
+  border-top-color: currentColor;
+  border-bottom-width: 0;
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* checkbox · icon · repo+title · reason · avatars · time */
+.row {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) 132px 76px 104px;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  box-shadow: var(--shadow-row);
+}
+
+.row:hover {
+  background: var(--bg-hover);
+}
+
+.row[data-selected='true'] {
+  background: var(--bg-selected);
+}
+
+.rowCheck {
+  margin: 0;
+  accent-color: var(--fg-accent);
+}
+
+.stateIcon {
+  display: flex;
+  align-items: center;
+}
+
+.stateIcon[data-tone='open'] {
+  color: var(--fg-open);
+}
+.stateIcon[data-tone='done'] {
+  color: var(--fg-done);
+}
+.stateIcon[data-tone='closed'] {
+  color: var(--fg-closed);
+}
+.stateIcon[data-tone='muted'] {
+  color: var(--fg-muted);
+}
+.stateIcon[data-tone='accent'] {
+  color: var(--fg-accent);
+}
+
+.rowMain {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rowRepo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--fg-muted);
+  font-size: 12px;
+  line-height: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowTitle {
+  font-size: 14px;
+  line-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.rowTitle:hover {
+  color: var(--fg-accent);
+}
+
+/* Unread threads carry the weight; read ones recede. */
+.row[data-unread='true'] .rowTitle {
+  font-weight: 600;
+}
+
+.row[data-unread='false'] .rowTitle {
+  color: var(--fg-muted);
+}
+
+.rowReason {
+  color: var(--fg-muted);
+  font-size: 12px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Someone is waiting on you specifically. */
+.rowReason[data-direct='true'] {
+  color: var(--fg-attention);
+  font-weight: 600;
+}
+
+.avatarStack {
+  display: flex;
+  justify-content: center;
+}
+
+.avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--bg-muted);
+  box-shadow: 0 0 0 2px var(--bg-default);
+}
+
+.avatar + .avatar {
+  margin-left: -6px;
+}
+
+.rowTime {
+  color: var(--fg-muted);
+  font-size: 12px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.empty {
+  margin: 0;
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--fg-muted);
+}
+
+/* ── errors ──────────────────────────────────────────────────────────── */
+
+.error {
+  grid-column: 1 / -1;
+  padding: 24px;
+  background: var(--bg-default);
+  border: 1px solid var(--fg-closed);
+  border-radius: 6px;
+}
+
+.error h2 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: var(--fg-closed);
+}
+
+.error pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 12px;
+  color: var(--fg-muted);
+}

@@ -1,4 +1,11 @@
-/* Primer light/dark tokens, hand-copied so the app owns its own palette. */
+/* Monokai Classic in dark, on the Primer token names the sheet was written
+   against: surfaces are the editor background and its line-highlight and
+   selection steps, borders the hover step, accents the six Monokai hues.
+   Muted text is the theme's gutter gray, not its comment color: #75715e sits
+   at 3:1 on the panel and under 2:1 on a selected row, too dim for 12px
+   metadata. Light keeps Primer's palette: Monokai is a dark theme, and a
+   light-scheme viewer is better served by a coherent light inbox than by an
+   invented one. */
 :root {
   --bg-default: #ffffff;
   --bg-muted: #f6f8fa;
@@ -19,19 +26,19 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg-default: #0d1117;
-    --bg-muted: #151b23;
-    --bg-hover: #21262d;
-    --bg-selected: #121d2f;
-    --border-default: #3d444d;
-    --border-muted: #3d444d80;
-    --fg-default: #f0f6fc;
-    --fg-muted: #9198a1;
-    --fg-accent: #4493f8;
-    --fg-open: #3fb950;
-    --fg-done: #ab7df8;
-    --fg-closed: #f85149;
-    --fg-attention: #d29922;
+    --bg-default: #272822;
+    --bg-muted: #2d2e27;
+    --bg-hover: #3e3d32;
+    --bg-selected: #49483e;
+    --border-default: #3e3d32;
+    --border-muted: #3e3d3280;
+    --fg-default: #f8f8f2;
+    --fg-muted: #8f908a;
+    --fg-accent: #66d9ef;
+    --fg-open: #a6e22e;
+    --fg-done: #ae81ff;
+    --fg-closed: #f92672;
+    --fg-attention: #fd971f;
     color-scheme: dark;
   }
 }

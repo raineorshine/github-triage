@@ -55,7 +55,12 @@ npm run typecheck && npm run lint && npm test
 Start this worktree's server with `preview_start` and the `github-triage (worktree)` configuration
 from `.claude/launch.json`: it binds a free port, never 3100. Then check it with the Browser pane —
 `read_console_messages` for errors, `read_page` for the rows and the sidebar counts, a screenshot for
-anything visual. After a visible change, show the user that screenshot.
+anything visual. After a visible change, show the user that screenshot. The root URL is the Unread
+view; read rows, and the muted styling they carry, are at `/?view=inbox`. The Auto Done badge is on
+a row only while a thread qualifies, so a change to it can have nothing to show live and stands on
+what was measured. Check both colour schemes with `resize_window` and `colorScheme`, and take a
+screenshot after a resize before clicking by coordinate: the pane drops its screenshot dimensions
+and refuses the click until it has new ones.
 
 Stop the server with `preview_stop` and close its tab as soon as the check is done — not at the end
 of the session. For as long as it runs, the Browser pane polls it with `HEAD /` every few seconds,

@@ -35,8 +35,16 @@ that answers "why" or "how much" rather than "what do I decide" does not belong.
 
 ## Conventions
 
-- Plain CSS in `app/globals.css` using the Primer-derived custom properties at
-  the top. No CSS-in-JS, no utility framework.
+- Plain CSS in `app/globals.css` on the Primer-named custom properties at the
+  top: Primer's light palette, Monokai Classic in dark, with the reasons for
+  the dark choices in the comment above them. No CSS-in-JS, no utility
+  framework.
+- A palette change is checked on every surface a token sits on, not only the
+  panel. `--fg-muted` is 12–14px text on the panel, the canvas, a hovered row
+  and a selected row, and the selected row is where it fails first; hold 4.5:1
+  for text and 3:1 for the state icons. The Mac appearance decides which block
+  the user's tab shows — `defaults read -g AppleInterfaceStyle` prints `Dark`,
+  and errors when it is light — so say which block a change touches.
 - State-to-icon mapping lives in `lib/display.ts` (`stateKind`) and
   `components/StateIcon.tsx`. Add new subject types in both.
 - Keep React state updaters pure — StrictMode double-invokes them. Mutate refs

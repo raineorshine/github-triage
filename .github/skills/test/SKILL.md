@@ -60,7 +60,10 @@ view; read rows, and the muted styling they carry, are at `/?view=inbox`. The Au
 a row only while a thread qualifies, so a change to it can have nothing to show live and stands on
 what was measured. Check both colour schemes with `resize_window` and `colorScheme`, and take a
 screenshot after a resize before clicking by coordinate: the pane drops its screenshot dimensions
-and refuses the click until it has new ones.
+and refuses the click until it has new ones. A `<select>` is found by its role, `find "combobox"`,
+not by its label, and `form_input` on it reaches React's `onChange`. The private port and
+localhost:3100 are different origins, so anything a test stores in the browser on one — the theme
+choice, say — is not there on the other, and the pane's own profile is separate from Brave's.
 
 Stop the server with `preview_stop` and close its tab as soon as the check is done — not at the end
 of the session. For as long as it runs, the Browser pane polls it with `HEAD /` every few seconds,

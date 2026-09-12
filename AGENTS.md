@@ -42,8 +42,21 @@ that answers "why" or "how much" rather than "what do I decide" does not belong.
   top: `:root` pairs GitHub light with Monokai Classic through `light-dark()`,
   which is what System follows, and each named theme is a `[data-theme]` block
   after it. A theme is added there and in `lib/theme.ts`, both; the reasons
-  for the Monokai choices are in the comment above the blocks. No CSS-in-JS,
-  no utility framework.
+  for the Monokai choices are in the comment above the blocks. The script
+  that puts the stored theme on `<html>` is inline at the top of the body in
+  the root layout because nothing else is guaranteed to run before the first
+  paint: `next/script`'s `beforeInteractive` and `instrumentation-client.ts`
+  promise only to run before hydration. No CSS-in-JS, no utility framework.
+- Overlays are the native Popover API — `popoverTarget` on the button, a
+  `[popover]` element, which gives light-dismiss and Escape without client
+  code — positioned with CSS anchor positioning under an `@supports` guard
+  and fixed offsets as the fallback. `components/Settings.tsx` is the
+  pattern; the disabled "Select by" menu in the list header would be the
+  next one.
+- A value the browser keeps is read through `useSyncExternalStore` with a
+  server snapshot, as `components/ThemeSelect.tsx` reads the theme: the
+  server and the hydration pass render the default, the client's first
+  snapshot takes over, and no state is set in an effect.
 - A palette change is checked on every surface a token sits on, not only the
   panel. `--fg-muted` is 12–14px text on the panel, the canvas, a hovered row
   and a selected row, and the selected row is where it fails first; hold 4.5:1

@@ -1,37 +1,5 @@
 import type { Thread } from './types'
 
-/** GitHub's API reason codes, worded the way the notifications UI words them. */
-const REASON_LABELS: Record<string, string> = {
-  approval_requested: 'approval requested',
-  assign: 'assigned',
-  author: 'author',
-  ci_activity: 'ci activity',
-  comment: 'commented',
-  invitation: 'invitation',
-  manual: 'manual',
-  member_feature_requested: 'feature requested',
-  mention: 'mentioned',
-  review_requested: 'review requested',
-  security_advisory_credit: 'security advisory',
-  security_alert: 'security alert',
-  state_change: 'state change',
-  subscribed: 'subscribed',
-  team_mention: 'team mentioned',
-}
-
-export function reasonLabel(reason: string): string {
-  return REASON_LABELS[reason] ?? reason.replace(/_/g, ' ')
-}
-
-/** Reasons that mean somebody is waiting on you specifically. */
-export const DIRECT_REASONS = new Set([
-  'mention',
-  'team_mention',
-  'assign',
-  'review_requested',
-  'approval_requested',
-])
-
 const UNITS: [limit: number, seconds: number, name: string][] = [
   [60, 1, 'second'],
   [3600, 60, 'minute'],

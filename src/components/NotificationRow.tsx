@@ -1,7 +1,7 @@
 import { LockIcon } from '@primer/octicons-react'
 import AvatarStack from './AvatarStack'
 import StateIcon from './StateIcon'
-import { DIRECT_REASONS, reasonLabel, stateKind, timeAgo } from '@/lib/display'
+import { stateKind, timeAgo } from '@/lib/display'
 import type { Thread } from '@/lib/types'
 
 interface Props {
@@ -37,10 +37,13 @@ export default function NotificationRow({ thread, selected, onToggle }: Props) {
         <a className="rowTitle" href={thread.htmlUrl} target="_blank" rel="noreferrer">
           {thread.title}
         </a>
-      </span>
-
-      <span className="rowReason" data-direct={DIRECT_REASONS.has(thread.reason)}>
-        {reasonLabel(thread.reason)}
+        {/* Auto Done would dismiss this thread; say which rule, in the open. */}
+        {thread.autoDone?.verdict === 'done' && (
+          <span className="rowAuto">
+            <span className="rowAutoBadge">auto</span>
+            {thread.autoDone.detail}
+          </span>
+        )}
       </span>
 
       <AvatarStack actors={actors} />

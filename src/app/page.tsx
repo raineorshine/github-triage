@@ -15,11 +15,7 @@ function listOptions(view: string) {
 }
 
 function applyFilters(threads: Thread[], filters: Filters): Thread[] {
-  return threads.filter(
-    t =>
-      (!filters.repo || t.repo === filters.repo) &&
-      (!filters.reason || t.reason === filters.reason),
-  )
+  return threads.filter(t => !filters.repo || t.repo === filters.repo)
 }
 
 export default async function Page({
@@ -29,10 +25,10 @@ export default async function Page({
 }) {
   const params = await searchParams
   const one = (key: string) => (Array.isArray(params[key]) ? params[key][0] : params[key])
+  // Unread is the default view: what is left to decide on, not what was seen.
   const filters: Filters = {
-    view: one('view') ?? 'inbox',
+    view: one('view') ?? 'unread',
     repo: one('repo'),
-    reason: one('reason'),
   }
 
   let threads: Thread[] = []
@@ -55,7 +51,7 @@ export default async function Page({
   }
 
   // The sidebar counts every thread in the view; the list shows what survives
-  // the repo/reason filters.
+  // the repo filter.
   return (
     <main className="layout">
       <Sidebar threads={threads} filters={filters} />

@@ -5,9 +5,16 @@ server is a launchd agent, not something to start — see "The live slot" below.
 
 ## Constraints
 
-- **No persistent state.** No database, no cache, no background sync. GitHub is
-  the source of truth; filters live in the URL. Adding storage needs a deliberate
-  decision, not a convenience.
+- **No persistent state.** No database, no cache, no sync. GitHub is the source
+  of truth; filters live in the URL. The one file the app writes is the Auto
+  Done audit log (`lib/sweep.ts`): append-only and never read back, a record of
+  writes GitHub cannot list, not state. Adding anything the app *reads* needs a
+  deliberate decision, not a convenience.
+- **Page loads never write.** The Auto Done sweep runs only on
+  `POST /api/auto-done` — from the launchd timer, the inbox button, or
+  `npm run auto-done:run` — and is a dry run unless told to apply. The user's
+  tab reloading, or a worktree preview being polled, must never change the
+  inbox.
 - **The token is server-side only.** It is read in `lib/github.ts` via
   `getToken()`. Never pass it into a client component or a `NEXT_PUBLIC_` var.
 - **Notifications are REST-only**; GraphQL cannot list them. Enrichment is a
@@ -23,6 +30,11 @@ server is a launchd agent, not something to start — see "The live slot" below.
   `components/StateIcon.tsx`. Add new subject types in both.
 - Keep React state updaters pure — StrictMode double-invokes them. Mutate refs
   outside the updater.
+- Auto Done's rules are `lib/autoDone.ts`, pure and covered by `npm test`; a
+  change to what gets dismissed goes there with a test. Every GraphQL timeline
+  item type is classified in `lib/timeline.ts`, and one it has never seen keeps
+  the thread — so a new GitHub event is safe until it is listed as neutral
+  there.
 
 ## Workflow
 
@@ -73,7 +85,11 @@ and back again on release.
 **The inbox is real.** Every load reads the user's live notifications, and the
 thread writes (`markThreadRead`, `markThreadDone`, `unsubscribeThread`) change
 them on github.com. Done threads cannot be listed, so a Done cannot be undone
-from here. Never drive a write against a thread the user has not named.
+from here. Never drive a write against a thread the user has not named. The
+`Auto done · N` button is such a write, for every badged row at once, and
+`npm run auto-done:run -- --apply` is the same from the shell; the dry run —
+the badges, `npm run auto-done:run`, the audit log lines it appends — is what
+testing uses.
 
 ### Skills
 

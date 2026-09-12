@@ -14,7 +14,15 @@
     "build": "next build",
     "start": "next start -p 3100",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --test \"src/lib/*.test.ts\"",
+    "auto-done:install": "scripts/auto-done-service.sh install",
+    "auto-done:uninstall": "scripts/auto-done-service.sh uninstall",
+    "auto-done:start": "scripts/auto-done-service.sh start",
+    "auto-done:stop": "scripts/auto-done-service.sh stop",
+    "auto-done:status": "scripts/auto-done-service.sh status",
+    "auto-done:run": "scripts/auto-done-service.sh run",
+    "auto-done:logs": "scripts/auto-done-service.sh logs"
   },
   "dependencies": {
     "@primer/octicons-react": "^19.35.0",

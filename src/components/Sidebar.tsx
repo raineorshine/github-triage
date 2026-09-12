@@ -1,20 +1,17 @@
 import Link from 'next/link'
 import { BookmarkIcon, CheckIcon, InboxIcon, RepoIcon } from '@primer/octicons-react'
-import { reasonLabel } from '@/lib/display'
 import type { Thread } from '@/lib/types'
 
 export interface Filters {
   view: string
   repo?: string
-  reason?: string
 }
 
 function href(filters: Filters, patch: Partial<Filters>): string {
   const next = { ...filters, ...patch }
   const params = new URLSearchParams()
-  if (next.view && next.view !== 'inbox') params.set('view', next.view)
+  if (next.view && next.view !== 'unread') params.set('view', next.view)
   if (next.repo) params.set('repo', next.repo)
-  if (next.reason) params.set('reason', next.reason)
   const query = params.toString()
   return query ? `/?${query}` : '/'
 }
@@ -31,7 +28,6 @@ function countBy(threads: Thread[], key: (t: Thread) => string): [string, number
  */
 export default function Sidebar({ threads, filters }: { threads: Thread[]; filters: Filters }) {
   const repos = countBy(threads, t => t.repo)
-  const reasons = countBy(threads, t => t.reason)
 
   return (
     <nav className="sidebar" aria-label="Notification filters">
@@ -70,22 +66,6 @@ export default function Sidebar({ threads, filters }: { threads: Thread[]; filte
             Done
           </span>
         </li>
-      </ul>
-
-      <h2 className="navHeading">Reason</h2>
-      <ul className="navGroup">
-        {reasons.map(([reason, count]) => (
-          <li key={reason}>
-            <Link
-              className="navItem"
-              href={href(filters, { reason: filters.reason === reason ? undefined : reason })}
-              data-active={filters.reason === reason}
-            >
-              <span className="navItemLabel">{reasonLabel(reason)}</span>
-              <span className="navCount">{count}</span>
-            </Link>
-          </li>
-        ))}
       </ul>
 
       <h2 className="navHeading">Repositories</h2>

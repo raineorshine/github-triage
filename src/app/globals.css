@@ -244,10 +244,10 @@ a {
   list-style: none;
 }
 
-/* checkbox · icon · repo+title · reason · avatars · time */
+/* checkbox · icon · repo+title · avatars · time */
 .row {
   display: grid;
-  grid-template-columns: auto auto minmax(0, 1fr) 132px 76px 104px;
+  grid-template-columns: auto auto minmax(0, 1fr) 76px 104px;
   align-items: center;
   gap: 12px;
   padding: 8px 16px;
@@ -329,19 +329,29 @@ a {
   color: var(--fg-muted);
 }
 
-.rowReason {
-  color: var(--fg-muted);
+/* Auto Done would mark this thread done: the badge, then the rule. Inline, so
+   a rule longer than the column wraps under the badge rather than being cut. */
+.rowAuto {
+  color: var(--fg-done);
   font-size: 12px;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 18px;
 }
 
-/* Someone is waiting on you specifically. */
-.rowReason[data-direct='true'] {
-  color: var(--fg-attention);
+.rowAutoBadge {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 6px;
+  border: 1px solid var(--fg-done);
+  border-radius: 999px;
+  font-size: 11px;
   font-weight: 600;
+  line-height: 16px;
+  vertical-align: 1px;
+}
+
+.listHeaderNote {
+  color: var(--fg-muted);
+  font-size: 12px;
 }
 
 .avatarStack {

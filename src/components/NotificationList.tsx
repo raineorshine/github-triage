@@ -1,12 +1,16 @@
 'use client'
 
 import { useCallback, useMemo, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import NotificationRow from './NotificationRow'
 import type { Thread } from '@/lib/types'
 
 export default function NotificationList({ threads }: { threads: Thread[] }) {
+  const router = useRouter()
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const lastToggled = useRef<string | null>(null)
+  const [sweeping, setSweeping] = useState(false)
+  const [sweepNote, setSweepNote] = useState<string | null>(null)
 
   const toggle = useCallback(
     (id: string, shiftKey: boolean) => {
@@ -45,6 +49,35 @@ export default function NotificationList({ threads }: { threads: Thread[] }) {
   const someSelected = selected.size > 0 && !allSelected
 
   const unreadCount = useMemo(() => threads.filter(t => t.unread).length, [threads])
+  // The rows tagged "auto": what Auto Done would mark done, judged when the
+  // page loaded. The sweep judges them again, fresh, before touching anything.
+  const candidates = useMemo(() => threads.filter(t => t.autoDone?.verdict === 'done'), [threads])
+
+  const runSweep = useCallback(async () => {
+    setSweeping(true)
+    setSweepNote(null)
+    try {
+      const res = await fetch('/api/auto-done?apply=1', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: candidates.map(t => t.id) }),
+      })
+      const report = await res.json()
+      if (!res.ok) {
+        setSweepNote(`Sweep failed: ${report.error ?? res.status}`)
+        return
+      }
+      const parts = [`${report.done} marked done`]
+      if (report.skipped) parts.push(`${report.skipped} skipped (changed meanwhile)`)
+      if (report.failed) parts.push(`${report.failed} failed`)
+      setSweepNote(parts.join(', '))
+      router.refresh()
+    } catch (e) {
+      setSweepNote(`Sweep failed: ${e instanceof Error ? e.message : String(e)}`)
+    } finally {
+      setSweeping(false)
+    }
+  }, [candidates, router])
 
   return (
     <div className="list">
@@ -68,6 +101,17 @@ export default function NotificationList({ threads }: { threads: Thread[] }) {
         <button type="button" className="linkButton" disabled>
           Select by <span className="caret" />
         </button>
+        <span className="listHeaderSep">·</span>
+        <button
+          type="button"
+          className="linkButton"
+          disabled={candidates.length === 0 || sweeping}
+          onClick={runSweep}
+          title="Mark every row tagged auto as done"
+        >
+          {sweeping ? 'Sweeping…' : `Auto done · ${candidates.length}`}
+        </button>
+        {sweepNote && <span className="listHeaderNote">{sweepNote}</span>}
         <span className="listHeaderRight">
           {unreadCount} unread · {threads.length} shown
         </span>

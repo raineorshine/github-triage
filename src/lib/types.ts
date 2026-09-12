@@ -1,3 +1,5 @@
+import type { Verdict } from './autoDone'
+
 /** Raw notification thread as returned by GET /notifications. */
 export interface RestNotification {
   id: string
@@ -70,4 +72,11 @@ export interface Thread {
   type: string
   number: number | null
   subject: Subject | null
+  /** When you last read the thread, per GitHub; null if never. */
+  lastReadAt: string | null
+  /**
+   * What Auto Done makes of the activity since then. Only unread issues and
+   * pull requests are judged; everything else is null.
+   */
+  autoDone: Verdict | null
 }

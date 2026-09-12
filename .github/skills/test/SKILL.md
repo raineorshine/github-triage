@@ -201,6 +201,9 @@ Release first, then follow the `ship` skill.
   2 of 5000 hourly API points. The thread writes are not: marking read, marking Done and
   unsubscribing change their inbox on github.com, and a Done thread cannot even be listed afterwards.
   Never click a write control, in either server, on a thread the user has not named for it.
+  `Auto done · N` in the list header is one, for every badged row at once, and
+  `npm run auto-done:run -- --apply` is the same from the shell; the dry run (`npm run auto-done:run`,
+  and the badges) is the test.
 - **The tab is the user's.** `install` and `release` both restart the server, and the open tab
   reloads on the other side, dropping any selection it held. Say that it will happen when handing
   over rather than letting it land mid-triage.

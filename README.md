@@ -4,6 +4,8 @@ A triage-focused replacement for [github.com/notifications](https://github.com/n
 
 GitHub is the source of truth. The app stores nothing — no database, no cache, no
 sync. Every page load reads live from the GitHub API, and filters live in the URL.
+The one thing kept, in the browser, is the theme picked under the gear: System,
+GitHub light, Monokai Classic or Monokai.
 
 ## Setup
 
@@ -164,12 +166,16 @@ src/
     timeline.ts   GraphQL timeline items → events, neutral or unknown
     autoDone.ts   the Auto Done rules: activity → verdict (npm test)
     sweep.ts      one sweep: list, judge, re-check, mark done, audit log
+    theme.ts      the named palettes, and the choice the browser keeps
   components/
     Sidebar.tsx           URL-encoded filters, counts from the loaded page
     NotificationList.tsx  selection state and the Auto done button (client)
     NotificationRow.tsx   one row
     StateIcon.tsx         octicon + colour per issue/PR state
+    Settings.tsx          the gear and its popover, Popover API
+    ThemeSelect.tsx       the theme select (client)
   app/
+    layout.tsx              top bar, and the script that themes the first paint
     page.tsx                fetches and filters, server-rendered
     api/auto-done/route.ts  POST: one sweep, a dry run unless ?apply=1
 scripts/

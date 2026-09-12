@@ -15,7 +15,10 @@ that answers "why" or "how much" rather than "what do I decide" does not belong.
 - **No persistent state.** No database, no cache, no sync. GitHub is the source
   of truth; filters live in the URL. The one file the app writes is the Auto
   Done audit log (`lib/sweep.ts`): append-only and never read back, a record of
-  writes GitHub cannot list, not state. Adding anything the app *reads* needs a
+  writes GitHub cannot list, not state. The one thing kept in the browser is
+  the theme choice, in `localStorage` (`lib/theme.ts`): read by the boot
+  script in the root layout before first paint and by the Settings panel,
+  never by the server. Adding anything else the app *reads* needs a
   deliberate decision, not a convenience.
 - **Page loads never write.** The Auto Done sweep runs only on
   `POST /api/auto-done` — from the launchd timer, the inbox button, or
@@ -36,15 +39,18 @@ that answers "why" or "how much" rather than "what do I decide" does not belong.
 ## Conventions
 
 - Plain CSS in `app/globals.css` on the Primer-named custom properties at the
-  top: Primer's light palette, Monokai Classic in dark, with the reasons for
-  the dark choices in the comment above them. No CSS-in-JS, no utility
-  framework.
+  top: `:root` pairs GitHub light with Monokai Classic through `light-dark()`,
+  which is what System follows, and each named theme is a `[data-theme]` block
+  after it. A theme is added there and in `lib/theme.ts`, both; the reasons
+  for the Monokai choices are in the comment above the blocks. No CSS-in-JS,
+  no utility framework.
 - A palette change is checked on every surface a token sits on, not only the
   panel. `--fg-muted` is 12–14px text on the panel, the canvas, a hovered row
   and a selected row, and the selected row is where it fails first; hold 4.5:1
-  for text and 3:1 for the state icons. The Mac appearance decides which block
-  the user's tab shows — `defaults read -g AppleInterfaceStyle` prints `Dark`,
-  and errors when it is light — so say which block a change touches.
+  for text and 3:1 for the state icons. With no theme chosen, the Mac
+  appearance decides which palette the user's tab shows —
+  `defaults read -g AppleInterfaceStyle` prints `Dark`, and errors when it is
+  light — so say which palette a change touches.
 - State-to-icon mapping lives in `lib/display.ts` (`stateKind`) and
   `components/StateIcon.tsx`. Add new subject types in both.
 - Keep React state updaters pure — StrictMode double-invokes them. Mutate refs

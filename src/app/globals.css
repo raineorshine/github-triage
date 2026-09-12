@@ -1,46 +1,56 @@
-/* Monokai Classic in dark, on the Primer token names the sheet was written
-   against: surfaces are the editor background and its line-highlight and
-   selection steps, borders the hover step, accents the six Monokai hues.
-   Muted text is the theme's gutter gray, not its comment color: #75715e sits
-   at 3:1 on the panel and under 2:1 on a selected row, too dim for 12px
-   metadata. Light keeps Primer's palette: Monokai is a dark theme, and a
-   light-scheme viewer is better served by a coherent light inbox than by an
-   invented one. */
+/* Palettes on the Primer token names the sheet was written against. `:root`
+   pairs GitHub light with Monokai Classic through light-dark(), so with no
+   theme chosen the Mac's appearance picks one; a chosen theme is a
+   [data-theme] block below, set on <html> by lib/theme.ts.
+
+   Monokai Classic: surfaces are the editor background and its line-highlight
+   and selection steps, borders the hover step, accents the six Monokai hues.
+   Muted text is the theme's gutter gray, not its comment colour: #75715e
+   sits at 3:1 on the panel and under 2:1 on a selected row, too dim for 12px
+   metadata. Monokai is the palette's modern revision — the Monokai Pro base
+   scale and hues — mapped the same way, with the canvas a step darker than
+   the panel as that theme's chrome is. */
 :root {
-  --bg-default: #ffffff;
-  --bg-muted: #f6f8fa;
-  --bg-hover: #eff2f5;
-  --bg-selected: #ddf4ff;
-  --border-default: #d1d9e0;
-  --border-muted: #d1d9e080;
-  --fg-default: #1f2328;
-  --fg-muted: #59636e;
-  --fg-accent: #0969da;
-  --fg-open: #1a7f37;
-  --fg-done: #8250df;
-  --fg-closed: #d1242f;
-  --fg-attention: #9a6700;
+  color-scheme: light dark;
+  --bg-default: light-dark(#ffffff, #272822);
+  --bg-muted: light-dark(#f6f8fa, #2d2e27);
+  --bg-hover: light-dark(#eff2f5, #3e3d32);
+  --bg-selected: light-dark(#ddf4ff, #49483e);
+  --border-default: light-dark(#d1d9e0, #3e3d32);
+  --border-muted: light-dark(#d1d9e080, #3e3d3280);
+  --fg-default: light-dark(#1f2328, #f8f8f2);
+  --fg-muted: light-dark(#59636e, #8f908a);
+  --fg-accent: light-dark(#0969da, #66d9ef);
+  --fg-open: light-dark(#1a7f37, #a6e22e);
+  --fg-done: light-dark(#8250df, #ae81ff);
+  --fg-closed: light-dark(#d1242f, #f92672);
+  --fg-attention: light-dark(#9a6700, #fd971f);
   --shadow-row: inset 0 1px 0 var(--border-muted);
+}
+
+[data-theme='github-light'] {
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-default: #272822;
-    --bg-muted: #2d2e27;
-    --bg-hover: #3e3d32;
-    --bg-selected: #49483e;
-    --border-default: #3e3d32;
-    --border-muted: #3e3d3280;
-    --fg-default: #f8f8f2;
-    --fg-muted: #8f908a;
-    --fg-accent: #66d9ef;
-    --fg-open: #a6e22e;
-    --fg-done: #ae81ff;
-    --fg-closed: #f92672;
-    --fg-attention: #fd971f;
-    color-scheme: dark;
-  }
+[data-theme='monokai-classic'] {
+  color-scheme: dark;
+}
+
+[data-theme='monokai'] {
+  --bg-default: #2d2a2e;
+  --bg-muted: #221f22;
+  --bg-hover: #403e41;
+  --bg-selected: #5b595c;
+  --border-default: #403e41;
+  --border-muted: #403e4180;
+  --fg-default: #fcfcfa;
+  --fg-muted: #939293;
+  --fg-accent: #78dce8;
+  --fg-open: #a9dc76;
+  --fg-done: #ab9df2;
+  --fg-closed: #ff6188;
+  --fg-attention: #fc9867;
+  color-scheme: dark;
 }
 
 * {
@@ -81,6 +91,83 @@ a {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
+}
+
+/* ── settings ────────────────────────────────────────────────────────── */
+
+.settingsButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--fg-muted);
+  cursor: pointer;
+  anchor-name: --settings;
+}
+
+.settingsButton:hover {
+  background: var(--bg-hover);
+  color: var(--fg-default);
+}
+
+/* Under the gear. The offsets are the top bar's height plus a gap, for
+   browsers without anchor positioning; with it, the panel follows the gear. */
+.settingsPanel {
+  position: fixed;
+  inset: auto;
+  top: 61px;
+  right: 24px;
+  min-width: 260px;
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-default);
+  color: var(--fg-default);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.2);
+}
+
+@supports (position-anchor: --settings) {
+  .settingsPanel {
+    position-anchor: --settings;
+    top: anchor(bottom);
+    right: anchor(right);
+    margin-top: 8px;
+  }
+}
+
+.settingsTitle {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.settingsField {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.settingsSelect {
+  padding: 4px 8px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-muted);
+  color: var(--fg-default);
+  font: inherit;
+}
+
+.settingsHint {
+  margin: 8px 0 0;
+  color: var(--fg-muted);
+  font-size: 12px;
 }
 
 /* ── layout ──────────────────────────────────────────────────────────── */

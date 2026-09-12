@@ -49,7 +49,7 @@ nested worktree, so typecheck and lint would pass against the wrong tree while `
 MAIN=$(git worktree list | head -1 | awk '{print $1}')
 [ -e .env.local ] || ln -s "$MAIN/.env.local" .env.local
 [ -d node_modules ] || npm ci
-npm run typecheck && npm run lint
+npm run typecheck && npm run lint && npm test
 ```
 
 Start this worktree's server with `preview_start` and the `github-triage (worktree)` configuration
@@ -59,8 +59,9 @@ anything visual. After a visible change, show the user that screenshot.
 
 Stop the server with `preview_stop` and close its tab as soon as the check is done — not at the end
 of the session. For as long as it runs, the Browser pane polls it with `HEAD /` every few seconds,
-and each poll renders the page, which reads `/notifications`: measured, an idle preview spends about
-a sixth of the hourly REST budget the user's own inbox runs on.
+and each poll renders the page, which reads `/notifications`: measured before Auto Done, an idle
+preview spent about a sixth of the hourly REST budget the user's own inbox runs on, and a render is
+one request more since.
 
 **One `next dev` per checkout.** Next locks `.next/dev/lock`, and a second server in the same
 directory exits on sight. So this preview and the live slot cannot both run this worktree: the

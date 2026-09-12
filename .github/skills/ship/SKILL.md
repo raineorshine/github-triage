@@ -58,15 +58,16 @@ Ship the change you *tested* — if the branch moved after the last test, re-tes
 ### 1. Gates (must pass before committing)
 
 ```bash
-npm run typecheck && npm run lint && npm run build
+npm run typecheck && npm run lint && npm test && npm run build
 ```
 
-Fix every finding and re-run until clean. `next build` is the only one of the three that compiles
+Fix every finding and re-run until clean. `next build` is the only one of the four that compiles
 the App Router's server/client split and the route config, so a tree that typechecks and lints can
 still fail it.
 
-There is no test suite. If what the inbox shows changed, it should have gone through the `test`
-skill already; a green build is not evidence that a row still renders.
+`npm test` covers the Auto Done rules and the timeline classification, nothing that renders. If what
+the inbox shows changed, it should have gone through the `test` skill already; a green build is not
+evidence that a row still renders.
 
 Build output (`.next/`) is ignored. Never commit it, and never commit `.env.local` — in a worktree
 it is a symlink to the main checkout's, holding the token.

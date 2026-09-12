@@ -100,7 +100,9 @@ the thread, as does a window that could not be fetched whole. Labels,
 milestones, references and the rest of GitHub's bookkeeping never make a thread
 unread and are ignored, and so is your own activity; `src/lib/timeline.ts`
 classifies every timeline item type. `npm test` runs the rules against
-fixtures.
+fixtures. [docs/notification-activity.md](docs/notification-activity.md) records
+what the GitHub API actually reports about a thread's activity, which the
+rules are built on.
 
 Two things run the sweep:
 
@@ -145,6 +147,11 @@ anything landing after it should bring the thread back.
   author) stand in for it.
 - **No notification webhook.** Nothing pushes new notifications to you; the
   Auto Done timer polls, and `X-Poll-Interval` puts the floor at once a minute.
+- **The `reason` is not the latest event.** It is the strongest reason you were
+  ever notified for and stays put — a thread reads `mentioned` long after the
+  mention was read — so nothing here shows or decides on it. Auto Done finds
+  mentions in the activity itself; [docs/notification-activity.md](docs/notification-activity.md)
+  has what the API does and does not say.
 
 ## Layout
 

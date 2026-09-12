@@ -6,8 +6,10 @@
  * unread), or — when it is not listed at all — as unknown, which keeps the
  * thread. A new item type from GitHub is therefore safe by default.
  *
- * TIMELINE_ITEM_FIELDS is the GraphQL selection that produces the raw nodes
- * normalizeTimeline reads; keep the two in step.
+ * timelineItemFields is the GraphQL selection that produces the raw nodes
+ * normalizeTimeline reads; keep the two in step. What the timeline does and
+ * does not report — `since` and commits, where a mention can hide — is in
+ * docs/notification-activity.md.
  */
 
 export interface Actor {

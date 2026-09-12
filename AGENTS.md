@@ -3,6 +3,13 @@
 Next.js App Router. `npm run typecheck`, `npm run lint`, `npm run build`. The dev
 server is a launchd agent, not something to start — see "The live slot" below.
 
+## Direction
+
+The inbox shows what is being asked of you, not why you were notified. Every
+change moves it toward that — a decision-oriented view — and away from
+notification noise, analysis, review and monitoring. A column, filter or count
+that answers "why" or "how much" rather than "what do I decide" does not belong.
+
 ## Constraints
 
 - **No persistent state.** No database, no cache, no sync. GitHub is the source
@@ -15,6 +22,10 @@ server is a launchd agent, not something to start — see "The live slot" below.
   `npm run auto-done:run` — and is a dry run unless told to apply. The user's
   tab reloading, or a worktree preview being polled, must never change the
   inbox.
+- **GitHub calls run one at a time.** Never `Promise.all` two of them: the
+  secondary rate limit forbids concurrent requests for one user, and its 403
+  shuts the inbox for minutes. Serial costs a page load a few hundred
+  milliseconds; see docs/notification-activity.md.
 - **The token is server-side only.** It is read in `lib/github.ts` via
   `getToken()`. Never pass it into a client component or a `NEXT_PUBLIC_` var.
 - **Notifications are REST-only**; GraphQL cannot list them. Enrichment is a
@@ -34,7 +45,11 @@ server is a launchd agent, not something to start — see "The live slot" below.
   change to what gets dismissed goes there with a test. Every GraphQL timeline
   item type is classified in `lib/timeline.ts`, and one it has never seen keeps
   the thread — so a new GitHub event is safe until it is listed as neutral
-  there.
+  there. What the notifications API and the timeline actually say — the sticky
+  `reason`, what `since` hides, where a mention can be — is in
+  docs/notification-activity.md; read it before changing either file.
+- `Thread.reason` is not a signal. It is GitHub's sticky record of why you are
+  subscribed, kept for the audit log; nothing shown or decided reads it.
 
 ## Workflow
 
@@ -84,7 +99,10 @@ and back again on release.
 
 **The inbox is real.** Every load reads the user's live notifications, and the
 thread writes (`markThreadRead`, `markThreadDone`, `unsubscribeThread`) change
-them on github.com. Done threads cannot be listed, so a Done cannot be undone
+them on github.com. Reading is free to use as a design tool: a script that
+loads the token from `.env.local` (never printing it) and surveys the real
+inbox is as harmless as a page load, and what the API actually returns is worth
+more than what its docs say. Writes are the hazard. Done threads cannot be listed, so a Done cannot be undone
 from here. Never drive a write against a thread the user has not named. The
 `Auto done · N` button is such a write, for every badged row at once, and
 `npm run auto-done:run -- --apply` is the same from the shell; the dry run —
@@ -110,7 +128,7 @@ A session in a Linux container (`uname -s` is not `Darwin`) has no launchd and
 so no live slot — and no `.env.local`, so the page cannot even render there. The
 lock script refuses (its `npm run dev:install` hint is for a Mac), and `ship` is
 not its to run either: the cloud harness wants a branch and a pull request
-rather than a push to `main`. Typecheck, lint and build still run.
+rather than a push to `main`. Typecheck, lint, tests and build still run.
 
 Commit, push the branch the harness designates, and open the pull request it
 asks for. Then, at the point `test` would run, queue a handoff card

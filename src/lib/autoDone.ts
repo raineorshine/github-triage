@@ -20,6 +20,10 @@ import type { TimelineEvent } from './timeline'
  * `draft` are judged on state: a discussion you were never part of, or a draft
  * nobody has pointed at you, is not for you whatever was said in it — mentions
  * aside. `closed-read`, by contrast, wants the close to be the only news.
+ *
+ * The API facts these rules rest on — the sticky `reason`, the baseline
+ * `last_read_at`, what the timeline's `since` hides — are in
+ * docs/notification-activity.md.
  */
 
 export type Rule = 'commit' | 'review-request' | 'closed-not-participating' | 'closed-read' | 'draft'
